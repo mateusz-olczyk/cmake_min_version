@@ -16,6 +16,8 @@ from packaging.version import parse as version_parse
 from termcolor import colored
 from pathvalidate import validate_filepath, ValidationError
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+
 
 class CMakeBinary(NamedTuple):
     version: str
@@ -190,7 +192,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--tools_directory",
         metavar="DIR",
-        default="tools",
+        default=SCRIPT_DIR / "tools",
+        type=Path,
         help='path to the CMake binaries (default: "tools")',
     )
     parser.add_argument(
@@ -210,13 +213,13 @@ if __name__ == "__main__":
     if args.full_search:
         working_version = full_search(
             cmake_parameters=args.params,
-            tools_dir=Path(args.tools_directory),
+            tools_dir=args.tools_directory,
             error_output=args.error_details,
         )
     else:
         working_version = binary_search(
             cmake_parameters=args.params,
-            tools_dir=Path(args.tools_directory),
+            tools_dir=args.tools_directory,
             error_output=args.error_details,
         )
 

@@ -13,6 +13,7 @@ import requests
 from packaging.version import parse as version_parse
 from tqdm import tqdm
 
+SCRIPT_DIR = Path(__file__).resolve().parent
 TIMEOUT_SECONDS = 10
 session = requests.Session()
 
@@ -138,7 +139,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--tools_directory",
         metavar="DIR",
-        default="tools",
+        default=SCRIPT_DIR / "tools",
+        type=Path,
         help='path to the CMake binaries (default: "tools")',
     )
     args = parser.parse_args()
@@ -173,4 +175,4 @@ if __name__ == "__main__":
 
     for idx, version in enumerate(versions):
         print(f"Downloading CMake {version.public} ({idx+1}/{len(versions)})...")
-        download_and_extract(url=version_dict[version.public], path=Path(args.tools_directory))
+        download_and_extract(url=version_dict[version.public], path=args.tools_directory)
