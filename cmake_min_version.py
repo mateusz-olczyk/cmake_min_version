@@ -13,8 +13,8 @@ from time import time
 from typing import List, NamedTuple, Optional
 
 from packaging.version import parse as version_parse
+from pathvalidate import ValidationError, validate_filepath
 from termcolor import colored
-from pathvalidate import validate_filepath, ValidationError
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 
