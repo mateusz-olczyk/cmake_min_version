@@ -14,6 +14,7 @@ from typing import List, NamedTuple, Optional
 
 from packaging.version import parse as version_parse
 from termcolor import colored
+from pathvalidate import validate_filepath, ValidationError
 
 
 class CMakeBinary(NamedTuple):
@@ -67,7 +68,17 @@ def get_cmake_binaries(tools_dir: Path) -> List[CMakeBinary]:
     return sorted(binaries, key=lambda x: version_parse(x.version))
 
 
+def make_path_absolute_if_applicable(parameter: str) -> str:
+    try:
+        validate_filepath(parameter)
+        return str(Path(parameter).absolute())
+    except ValidationError:
+        return parameter
+
+
 def try_configure(binary: Path, cmake_parameters: List[str]) -> ConfigureResult:
+    cmake_parameters = [make_path_absolute_if_applicable(param) for param in cmake_parameters]
+
     tmpdir = tempfile.TemporaryDirectory()
     proc = subprocess.Popen(
         [binary, *cmake_parameters, "-Wno-dev"],
